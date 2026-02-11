@@ -4,23 +4,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@aefbi | Private</title>
+    <title>@aefbi | Liquid Neon</title>
     <style>
         :root {
             --accent: #007AFF;
             --glass: rgba(255, 255, 255, 0.4);
             --text-main: #1c1c1e;
             --text-sec: #86868b;
+            --bg-color: #ffffff;
+            --card-border: rgba(0, 122, 255, 0.4);
+            --neon-glow: transparent;
+        }
+
+        /* ТЕМНАЯ ТЕМА */
+        body.dark-mode {
+            --bg-color: #000b1a; /* Глубокий темно-синий */
+            --text-main: #ffffff;
+            --text-sec: #a1a1a6;
+            --glass: rgba(255, 255, 255, 0.05);
+            --card-border: #007AFF;
+            --neon-glow: 0 0 15px rgba(0, 122, 255, 0.8);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
-            background: #ffffff;
+            background: var(--bg-color);
             overflow-x: hidden;
             scroll-snap-type: y mandatory;
             height: 100vh;
+            transition: background 0.8s ease;
         }
 
         .section {
@@ -31,29 +45,24 @@
             scroll-snap-align: start;
             position: relative;
             overflow: hidden;
-            background: white;
         }
 
-        /* Рассеянные лучи света */
+        /* Лучи света */
         .light-ray {
             position: absolute;
             width: 85vw;
             height: 85vh;
-            background: radial-gradient(circle, rgba(0, 122, 255, 0.22) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(0, 122, 255, 0.25) 0%, transparent 70%);
             filter: blur(100px);
             opacity: 0;
             transition: opacity 1.6s ease-in-out, transform 1.6s ease-in-out;
-            pointer-events: none; /* Чтобы свет не мешал кликать */
+            pointer-events: none;
             z-index: 1;
         }
-
         .ray-tl { top: -20%; left: -20%; transform: translate(-15%, -15%); }
         .ray-br { bottom: -20%; right: -20%; transform: translate(15%, 15%); }
 
-        .section.active .light-ray {
-            opacity: 1;
-            transform: translate(0, 0);
-        }
+        .section.active .light-ray { opacity: 1; transform: translate(0, 0); }
 
         .glass-card {
             background: var(--glass);
@@ -67,67 +76,71 @@
             position: relative;
             z-index: 10;
             opacity: 0;
-            transition: opacity 1.2s ease-out, transform 1.2s ease-out;
+            transition: all 1.2s ease-out;
             transform: translateY(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        /* Обводка рамки */
+        /* Рамка */
         .glass-card::after {
             content: '';
             position: absolute;
             inset: 0;
-            border: 2px solid var(--accent);
+            border: 2px solid var(--card-border);
             border-radius: 45px;
             opacity: 0;
-            transition: opacity 1.2s ease-in-out 0.9s; 
-            box-shadow: 0 0 25px rgba(0, 122, 255, 0.15);
+            transition: opacity 1.2s ease-in-out 0.9s, box-shadow 0.8s ease; 
+            box-shadow: var(--neon-glow);
             pointer-events: none;
         }
 
         .section.active .glass-card { opacity: 1; transform: translateY(0); }
-        .section.active .glass-card::after { opacity: 0.4; }
+        .section.active .glass-card::after { opacity: 0.5; }
 
-        h1 { font-size: 3.2rem; font-weight: 800; letter-spacing: -2px; margin-bottom: 8px; }
-        h2 { font-size: 2.3rem; font-weight: 700; margin-bottom: 18px; letter-spacing: -1px; }
-        p { color: var(--text-sec); font-size: 1.15rem; line-height: 1.5; font-style: italic; }
-        .red { color: #ff3b30; }
-
-        /* Кнопка "Написать мне" с исправлением кликабельности */
-        .cta-button {
-            display: inline-block;
-            margin-top: 25px;
-            padding: 14px 30px;
-            background: var(--accent);
-            color: #ffffff !important;
-            text-decoration: none !important;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 1rem;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: all 0.8s ease-in-out 1.2s;
-            box-shadow: 0 10px 20px rgba(0, 122, 255, 0.2);
-            position: relative;
-            z-index: 50; /* Поверх всего */
-            pointer-events: auto; /* Явно разрешаем клики */
+        /* Текст с неоновым свечением в темной теме */
+        h1, h2 { 
+            color: var(--text-main); 
+            transition: 0.8s;
+            text-shadow: var(--neon-glow);
         }
-        .section.active .cta-button { opacity: 1; transform: translateY(0); }
-        .cta-button:hover { transform: scale(1.05); background: #0066d6; }
+        h1 { font-size: 3.2rem; font-weight: 800; letter-spacing: -2px; margin-bottom: 8px; }
+        h2 { font-size: 2.3rem; font-weight: 700; margin-bottom: 18px; }
+        p { color: var(--text-sec); font-size: 1.15rem; line-height: 1.5; font-style: italic; transition: 0.8s; }
+        .red { color: #ff3b30; text-shadow: none; }
 
-        /* ИГРА */
-        .game-btn {
+        /* Кнопки управления */
+        .controls {
             position: fixed; top: 20px; right: 20px; z-index: 1000;
+            display: flex; flex-direction: column; gap: 10px; align-items: flex-end;
+        }
+        .ui-btn {
             padding: 10px 15px; background: rgba(0,0,0,0.05); border-radius: 20px;
             font-size: 10px; cursor: pointer; backdrop-filter: blur(10px);
-            border: 1px solid rgba(0,0,0,0.1); transition: 0.3s; text-transform: uppercase;
+            border: 1px solid rgba(0,0,0,0.1); transition: 0.3s; 
+            text-transform: uppercase; letter-spacing: 1px; color: var(--text-main);
         }
+        body.dark-mode .ui-btn { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); }
+
+        /* Написать мне */
+        .cta-button {
+            display: inline-block; margin-top: 25px; padding: 14px 30px;
+            background: var(--accent); color: #ffffff !important;
+            text-decoration: none !important; border-radius: 20px;
+            font-weight: 600; opacity: 0; transform: translateY(10px);
+            transition: all 0.8s ease-in-out 1.2s;
+            box-shadow: 0 10px 20px rgba(0, 122, 255, 0.3);
+            z-index: 50; position: relative;
+        }
+        .section.active .cta-button { opacity: 1; transform: translateY(0); }
+
+        /* ИГРА */
         #dot {
             position: fixed; width: 14px; height: 14px; background: #ff3b30;
             border-radius: 50%; display: none; cursor: pointer; z-index: 999;
             box-shadow: 0 0 15px #ff3b30;
         }
         #prank {
-            position: fixed; inset: 0; background: white; display: none;
+            position: fixed; inset: 0; background: var(--bg-color); display: none;
             justify-content: center; align-items: center; z-index: 2000;
             font-size: 3.5rem; font-weight: 900; color: #ff3b30; text-align: center;
         }
@@ -135,7 +148,11 @@
 </head>
 <body>
 
-    <div class="game-btn" onclick="startDot()">поймай красную точку</div>
+    <div class="controls">
+        <div class="ui-btn" onclick="startDot()">поймай красную точку</div>
+        <div class="ui-btn" onclick="toggleDark()">темная тема</div>
+    </div>
+
     <div id="dot" onclick="hit()"></div>
     <div id="prank">ПОШЕЛ НАХУЙ</div>
 
@@ -151,7 +168,7 @@
         <div class="light-ray ray-tl"></div><div class="light-ray ray-br"></div>
         <div class="glass-card">
             <h2>Пиши по делу</h2>
-            <p>"Краткость — это не только талант, но и уважение к чужому времени."</p>
+            <p>"Краткость — это талант и уважение к чужому времени."</p>
         </div>
     </section>
 
@@ -159,15 +176,7 @@
         <div class="light-ray ray-tl"></div><div class="light-ray ray-br"></div>
         <div class="glass-card">
             <h2 class="red">Угрозы — ЧС</h2>
-            <p>"Там, где заканчиваются аргументы, закрываются все двери."</p>
-        </div>
-    </section>
-
-    <section class="section">
-        <div class="light-ray ray-tl"></div><div class="light-ray ray-br"></div>
-        <div class="glass-card">
-            <h2>Уважай время</h2>
-            <p>"Секунды — валюта жизни. Не трать ресурсы на пустоту."</p>
+            <p>"Там, где начинаются крики, заканчивается смысл."</p>
         </div>
     </section>
 
@@ -181,17 +190,21 @@
     </section>
 
     <script>
+        // Анимация скролла
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                } else {
-                    entry.target.classList.remove('active');
-                }
+                if (entry.isIntersecting) entry.target.classList.add('active');
+                else entry.target.classList.remove('active');
             });
         }, { threshold: 0.6 });
         document.querySelectorAll('.section').forEach(s => observer.observe(s));
 
+        // Темная тема
+        function toggleDark() {
+            document.body.classList.toggle('dark-mode');
+        }
+
+        // Игра
         function startDot() {
             const d = document.getElementById('dot');
             d.style.display = 'block';
