@@ -4,13 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@aefbi | Liquid Edge</title>
+    <title>@aefbi | Личное</title>
     <style>
         :root {
             --bg-gradient: linear-gradient(135deg, #e0f2f7 0%, #ffffff 100%);
             --accent: #007AFF;
             --glass: rgba(255, 255, 255, 0.4);
-            --text: #1c1c1e;
+            --text-main: #1c1c1e;
             --text-sec: #86868b;
         }
 
@@ -20,129 +20,132 @@
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
             background: var(--bg-gradient);
             background-attachment: fixed;
-            color: var(--text);
             overflow-x: hidden;
+            scroll-snap-type: y mandatory; /* Листается как страницы в iOS */
+            height: 100vh;
         }
 
-        .page {
+        .section {
             height: 100vh;
+            width: 100vw;
             display: flex;
             justify-content: center;
             align-items: center;
+            scroll-snap-align: start;
             position: relative;
-            perspective: 1000px;
+            overflow: hidden;
         }
 
-        .glass-box {
-            position: relative;
-            padding: 40px;
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 30px;
-            text-align: center;
-            max-width: 90%;
-            width: 400px;
-            opacity: 0;
-            transform: scale(0.9);
-            transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-
-        /* Те самые линии, стекающиеся с краев */
+        /* Линии, которые текут с краев экрана */
         .flow-line {
             position: absolute;
             background: var(--accent);
-            transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1);
-            z-index: -1;
+            box-shadow: 0 0 20px var(--accent);
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 5;
             opacity: 0;
         }
 
-        /* Направления вылета */
         .line-t { top: -100vh; left: 50%; width: 2px; height: 100vh; }
         .line-b { bottom: -100vh; left: 50%; width: 2px; height: 100vh; }
         .line-l { left: -100vw; top: 50%; width: 100vw; height: 2px; }
         .line-r { right: -100vw; top: 50%; width: 100vw; height: 2px; }
 
-        /* Состояние активации (когда доскроллили) */
-        .page.active .glass-box {
-            opacity: 1;
-            transform: scale(1);
+        /* Карточка Liquid Glass */
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(30px) saturate(180%);
+            -webkit-backdrop-filter: blur(30px) saturate(180%);
+            border-radius: 40px;
+            padding: 50px 30px;
+            text-align: center;
+            max-width: 420px;
+            width: 85%;
+            position: relative;
+            z-index: 10;
+            opacity: 0;
+            transform: scale(0.85);
+            transition: all 0.7s cubic-bezier(0.2, 1, 0.3, 1);
         }
 
-        .page.active .line-t { top: 0; opacity: 1; height: 40px; }
-        .page.active .line-b { bottom: 0; opacity: 1; height: 40px; }
-        .page.active .line-l { left: 0; opacity: 1; width: 40px; }
-        .page.active .line-r { right: 0; opacity: 1; width: 40px; }
+        /* Состояние активации */
+        .section.active .glass-card { opacity: 1; transform: scale(1); }
+        .section.active .line-t { top: 0; opacity: 1; height: 35vh; }
+        .section.active .line-b { bottom: 0; opacity: 1; height: 35vh; }
+        .section.active .line-l { left: 0; opacity: 1; width: 35vw; }
+        .section.active .line-r { right: 0; opacity: 1; width: 35vw; }
 
-        /* Финальная жидкая рамка вокруг бокса */
-        .glass-box::after {
+        /* Жидкая рамка вокруг карточки */
+        .glass-card::before {
             content: '';
             position: absolute;
             inset: 0;
             border: 2px solid var(--accent);
-            border-radius: 30px;
+            border-radius: 40px;
             opacity: 0;
-            transition: opacity 0.5s 0.6s;
+            transition: opacity 0.5s 0.7s;
         }
-        .page.active .glass-box::after { opacity: 0.3; }
+        .section.active .glass-card::before { opacity: 0.5; }
 
-        h1 { font-size: 2.5rem; margin-bottom: 10px; letter-spacing: -1px; }
-        p { color: var(--text-sec); font-size: 1.1rem; line-height: 1.4; }
+        h1 { font-size: 3rem; font-weight: 800; letter-spacing: -2px; margin-bottom: 5px; }
+        h2 { font-size: 2.2rem; font-weight: 700; margin-bottom: 15px; line-height: 1.1; }
+        p { color: var(--text-sec); font-size: 1.1rem; line-height: 1.5; font-style: italic; }
         .red { color: #ff3b30; }
 
         a { color: inherit; text-decoration: none; border-bottom: 2px solid var(--accent); }
 
         .hint {
-            position: fixed; bottom: 20px; width: 100%; text-align: center;
-            font-size: 0.8rem; color: var(--text-sec); animation: pulse 2s infinite;
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            font-size: 0.7rem; color: var(--text-sec); text-transform: uppercase; letter-spacing: 2px;
+            animation: bounce 2s infinite; z-index: 100;
         }
-        @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+        @keyframes bounce { 0%, 100% { transform: translate(-50%, 0); opacity: 0.3; } 50% { transform: translate(-50%, -10px); opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <div class="hint">листай вниз</div>
+    <div class="hint">Листай вниз</div>
 
-    <section class="page">
+    <section class="section">
         <div class="line-t flow-line"></div><div class="line-b flow-line"></div>
         <div class="line-l flow-line"></div><div class="line-r flow-line"></div>
-        <div class="glass-box">
+        <div class="glass-card">
             <h1><a href="https://t.me/aefbi">@aefbi</a></h1>
             <p>и зачем ему писать?</p>
         </div>
     </section>
 
-    <section class="page">
+    <section class="section">
         <div class="line-t flow-line"></div><div class="line-b flow-line"></div>
         <div class="line-l flow-line"></div><div class="line-r flow-line"></div>
-        <div class="glass-box">
+        <div class="glass-card">
             <h2>Пиши по делу</h2>
-            <p>"Краткость — сестра таланта, а твоё время — моё уважение."</p>
+            <p>"Краткость — это не только талант, но и уважение к чужому времени."</p>
         </div>
     </section>
 
-    <section class="page">
+    <section class="section">
         <div class="line-t flow-line"></div><div class="line-b flow-line"></div>
         <div class="line-l flow-line"></div><div class="line-r flow-line"></div>
-        <div class="glass-box">
+        <div class="glass-card">
             <h2 class="red">Угрозы — ЧС</h2>
-            <p>"Там, где начинаются крики, заканчивается любой смысл."</p>
+            <p>"Там, где начинаются крики, заканчивается любой смысл. Умей держать лицо."</p>
         </div>
     </section>
 
-    <section class="page">
+    <section class="section">
         <div class="line-t flow-line"></div><div class="line-b flow-line"></div>
         <div class="line-l flow-line"></div><div class="line-r flow-line"></div>
-        <div class="glass-box">
+        <div class="glass-card">
             <h2>Уважай время</h2>
-            <p>"Секунды складываются в жизнь. Не трать их на пустоту."</p>
+            <p>"Секунды складываются в жизнь. Не трать мои и свои на пустоту."</p>
         </div>
     </section>
 
-    <section class="page">
+    <section class="section">
         <div class="line-t flow-line"></div><div class="line-b flow-line"></div>
         <div class="line-l flow-line"></div><div class="line-r flow-line"></div>
-        <div class="glass-box">
+        <div class="glass-card">
             <h2>Вот и всё</h2>
             <p>Поддерживаешь хороший разговор — жди такой же ответ.</p>
         </div>
@@ -159,7 +162,7 @@
             });
         }, { threshold: 0.6 });
 
-        document.querySelectorAll('.page').forEach(p => observer.observe(p));
+        document.querySelectorAll('.section').forEach(s => observer.observe(s));
     </script>
 </body>
 </html>
