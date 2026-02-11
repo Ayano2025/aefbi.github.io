@@ -4,12 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@aefbi | Личное</title>
+    <title>@aefbi | Light Rays</title>
     <style>
         :root {
-            --bg-gradient: linear-gradient(135deg, #e0f2f7 0%, #ffffff 100%);
-            --accent: #007AFF;
-            --glass: rgba(255, 255, 255, 0.4);
+            --bg-gradient: radial-gradient(circle at center, #ffffff 0%, #e0f2f7 100%);
+            --accent-light: rgba(0, 122, 255, 0.6);
+            --glass: rgba(255, 255, 255, 0.3);
             --text-main: #1c1c1e;
             --text-sec: #86868b;
         }
@@ -21,7 +21,7 @@
             background: var(--bg-gradient);
             background-attachment: fixed;
             overflow-x: hidden;
-            scroll-snap-type: y mandatory; /* Листается как страницы в iOS */
+            scroll-snap-type: y mandatory;
             height: 100vh;
         }
 
@@ -36,79 +36,102 @@
             overflow: hidden;
         }
 
-        /* Линии, которые текут с краев экрана */
-        .flow-line {
+        /* Те самые солнечные лучи */
+        .sun-ray {
             position: absolute;
-            background: var(--accent);
-            box-shadow: 0 0 20px var(--accent);
-            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-            z-index: 5;
+            width: 150vw;
+            height: 150vh;
+            pointer-events: none;
             opacity: 0;
+            transition: opacity 1.2s ease-out, transform 1.2s ease-out;
+            z-index: 1;
+            filter: blur(60px);
         }
 
-        .line-t { top: -100vh; left: 50%; width: 2px; height: 100vh; }
-        .line-b { bottom: -100vh; left: 50%; width: 2px; height: 100vh; }
-        .line-l { left: -100vw; top: 50%; width: 100vw; height: 2px; }
-        .line-r { right: -100vw; top: 50%; width: 100vw; height: 2px; }
+        /* Луч сверху-слева */
+        .ray-tl {
+            top: -75vh; left: -75vw;
+            background: radial-gradient(circle at center, var(--accent-light) 0%, transparent 70%);
+            transform: scale(0.5) translate(-20%, -20%);
+        }
+        /* Луч снизу-справа */
+        .ray-br {
+            bottom: -75vh; right: -75vw;
+            background: radial-gradient(circle at center, var(--accent-light) 0%, transparent 70%);
+            transform: scale(0.5) translate(20%, 20%);
+        }
 
-        /* Карточка Liquid Glass */
         .glass-card {
             background: var(--glass);
-            backdrop-filter: blur(30px) saturate(180%);
-            -webkit-backdrop-filter: blur(30px) saturate(180%);
-            border-radius: 40px;
-            padding: 50px 30px;
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border-radius: 50px;
+            padding: 60px 40px;
             text-align: center;
-            max-width: 420px;
-            width: 85%;
+            max-width: 440px;
+            width: 88%;
             position: relative;
             z-index: 10;
             opacity: 0;
-            transform: scale(0.85);
-            transition: all 0.7s cubic-bezier(0.2, 1, 0.3, 1);
+            transform: translateY(40px);
+            transition: all 1s cubic-bezier(0.2, 1, 0.3, 1);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.03);
         }
 
-        /* Состояние активации */
-        .section.active .glass-card { opacity: 1; transform: scale(1); }
-        .section.active .line-t { top: 0; opacity: 1; height: 35vh; }
-        .section.active .line-b { bottom: 0; opacity: 1; height: 35vh; }
-        .section.active .line-l { left: 0; opacity: 1; width: 35vw; }
-        .section.active .line-r { right: 0; opacity: 1; width: 35vw; }
+        /* Когда секция становится активной */
+        .section.active .sun-ray {
+            opacity: 0.4;
+            transform: scale(1) translate(0, 0);
+        }
 
-        /* Жидкая рамка вокруг карточки */
+        .section.active .glass-card {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Эффект свечения рамки от лучей */
         .glass-card::before {
             content: '';
             position: absolute;
             inset: 0;
-            border: 2px solid var(--accent);
-            border-radius: 40px;
+            border-radius: 50px;
+            padding: 2px;
+            background: linear-gradient(135deg, rgba(0,122,255,1), transparent, rgba(0,122,255,1));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
             opacity: 0;
-            transition: opacity 0.5s 0.7s;
+            transition: opacity 1s 0.5s;
         }
-        .section.active .glass-card::before { opacity: 0.5; }
 
-        h1 { font-size: 3rem; font-weight: 800; letter-spacing: -2px; margin-bottom: 5px; }
-        h2 { font-size: 2.2rem; font-weight: 700; margin-bottom: 15px; line-height: 1.1; }
-        p { color: var(--text-sec); font-size: 1.1rem; line-height: 1.5; font-style: italic; }
+        .section.active .glass-card::before {
+            opacity: 0.8;
+        }
+
+        h1 { font-size: 3.5rem; font-weight: 800; letter-spacing: -2px; margin-bottom: 10px; }
+        h2 { font-size: 2.5rem; font-weight: 700; margin-bottom: 20px; letter-spacing: -1px; }
+        p { color: var(--text-sec); font-size: 1.2rem; line-height: 1.6; font-style: italic; }
         .red { color: #ff3b30; }
 
-        a { color: inherit; text-decoration: none; border-bottom: 2px solid var(--accent); }
+        a { color: inherit; text-decoration: none; border-bottom: 3px solid #007AFF; }
 
         .hint {
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-            font-size: 0.7rem; color: var(--text-sec); text-transform: uppercase; letter-spacing: 2px;
-            animation: bounce 2s infinite; z-index: 100;
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            font-size: 0.7rem; color: var(--text-sec); text-transform: uppercase; 
+            letter-spacing: 4px; z-index: 100; animation: pulse 2s infinite;
         }
-        @keyframes bounce { 0%, 100% { transform: translate(-50%, 0); opacity: 0.3; } 50% { transform: translate(-50%, -10px); opacity: 1; } }
+        @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <div class="hint">Листай вниз</div>
+    <div class="hint">scroll</div>
 
     <section class="section">
-        <div class="line-t flow-line"></div><div class="line-b flow-line"></div>
-        <div class="line-l flow-line"></div><div class="line-r flow-line"></div>
+        <div class="sun-ray ray-tl"></div>
+        <div class="sun-ray ray-br"></div>
         <div class="glass-card">
             <h1><a href="https://t.me/aefbi">@aefbi</a></h1>
             <p>и зачем ему писать?</p>
@@ -116,38 +139,38 @@
     </section>
 
     <section class="section">
-        <div class="line-t flow-line"></div><div class="line-b flow-line"></div>
-        <div class="line-l flow-line"></div><div class="line-r flow-line"></div>
+        <div class="sun-ray ray-tl"></div>
+        <div class="sun-ray ray-br"></div>
         <div class="glass-card">
             <h2>Пиши по делу</h2>
-            <p>"Краткость — это не только талант, но и уважение к чужому времени."</p>
+            <p>"Краткость — это не только талант, но и базовое уважение к чужому времени."</p>
         </div>
     </section>
 
     <section class="section">
-        <div class="line-t flow-line"></div><div class="line-b flow-line"></div>
-        <div class="line-l flow-line"></div><div class="line-r flow-line"></div>
+        <div class="sun-ray ray-tl"></div>
+        <div class="sun-ray ray-br"></div>
         <div class="glass-card">
             <h2 class="red">Угрозы — ЧС</h2>
-            <p>"Там, где начинаются крики, заканчивается любой смысл. Умей держать лицо."</p>
+            <p>"Там, где заканчивается самообладание, закрываются все возможности для диалога."</p>
         </div>
     </section>
 
     <section class="section">
-        <div class="line-t flow-line"></div><div class="line-b flow-line"></div>
-        <div class="line-l flow-line"></div><div class="line-r flow-line"></div>
+        <div class="sun-ray ray-tl"></div>
+        <div class="sun-ray ray-br"></div>
         <div class="glass-card">
             <h2>Уважай время</h2>
-            <p>"Секунды складываются в жизнь. Не трать мои и свои на пустоту."</p>
+            <p>"Секунды складываются в жизнь. Не трать мои и свои ресурсы на пустоту."</p>
         </div>
     </section>
 
     <section class="section">
-        <div class="line-t flow-line"></div><div class="line-b flow-line"></div>
-        <div class="line-l flow-line"></div><div class="line-r flow-line"></div>
+        <div class="sun-ray ray-tl"></div>
+        <div class="sun-ray ray-br"></div>
         <div class="glass-card">
             <h2>Вот и всё</h2>
-            <p>Поддерживаешь хороший разговор — жди такой же ответ.</p>
+            <p>Поддерживаешь адекватный разговор — получаешь такой же ответ в ответ.</p>
         </div>
     </section>
 
@@ -160,7 +183,7 @@
                     entry.target.classList.remove('active');
                 }
             });
-        }, { threshold: 0.6 });
+        }, { threshold: 0.5 });
 
         document.querySelectorAll('.section').forEach(s => observer.observe(s));
     </script>
