@@ -43,7 +43,7 @@
             filter: blur(100px);
             opacity: 0;
             transition: opacity 1.6s ease-in-out, transform 1.6s ease-in-out;
-            pointer-events: none;
+            pointer-events: none; /* Чтобы свет не мешал кликать */
             z-index: 1;
         }
 
@@ -81,6 +81,7 @@
             opacity: 0;
             transition: opacity 1.2s ease-in-out 0.9s; 
             box-shadow: 0 0 25px rgba(0, 122, 255, 0.15);
+            pointer-events: none;
         }
 
         .section.active .glass-card { opacity: 1; transform: translateY(0); }
@@ -91,14 +92,14 @@
         p { color: var(--text-sec); font-size: 1.15rem; line-height: 1.5; font-style: italic; }
         .red { color: #ff3b30; }
 
-        /* Кнопка Написать мне */
+        /* Кнопка "Написать мне" с исправлением кликабельности */
         .cta-button {
             display: inline-block;
             margin-top: 25px;
             padding: 14px 30px;
             background: var(--accent);
-            color: white;
-            text-decoration: none;
+            color: #ffffff !important;
+            text-decoration: none !important;
             border-radius: 20px;
             font-weight: 600;
             font-size: 1rem;
@@ -106,19 +107,22 @@
             transform: translateY(10px);
             transition: all 0.8s ease-in-out 1.2s;
             box-shadow: 0 10px 20px rgba(0, 122, 255, 0.2);
+            position: relative;
+            z-index: 50; /* Поверх всего */
+            pointer-events: auto; /* Явно разрешаем клики */
         }
         .section.active .cta-button { opacity: 1; transform: translateY(0); }
-        .cta-button:hover { transform: scale(1.05); box-shadow: 0 12px 25px rgba(0, 122, 255, 0.3); }
+        .cta-button:hover { transform: scale(1.05); background: #0066d6; }
 
         /* ИГРА */
         .game-btn {
             position: fixed; top: 20px; right: 20px; z-index: 1000;
             padding: 10px 15px; background: rgba(0,0,0,0.05); border-radius: 20px;
             font-size: 10px; cursor: pointer; backdrop-filter: blur(10px);
-            border: 1px solid rgba(0,0,0,0.1); transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;
+            border: 1px solid rgba(0,0,0,0.1); transition: 0.3s; text-transform: uppercase;
         }
         #dot {
-            position: fixed; width: 12px; height: 12px; background: #ff3b30;
+            position: fixed; width: 14px; height: 14px; background: #ff3b30;
             border-radius: 50%; display: none; cursor: pointer; z-index: 999;
             box-shadow: 0 0 15px #ff3b30;
         }
@@ -163,7 +167,7 @@
         <div class="light-ray ray-tl"></div><div class="light-ray ray-br"></div>
         <div class="glass-card">
             <h2>Уважай время</h2>
-            <p>"Секунды — валюта жизни. Не трать мои и свои на пустоту."</p>
+            <p>"Секунды — валюта жизни. Не трать ресурсы на пустоту."</p>
         </div>
     </section>
 
@@ -191,13 +195,16 @@
         function startDot() {
             const d = document.getElementById('dot');
             d.style.display = 'block';
-            d.style.left = Math.random() * 85 + 'vw';
-            d.style.top = Math.random() * 85 + 'vh';
+            d.style.left = Math.random() * 80 + 'vw';
+            d.style.top = Math.random() * 80 + 'vh';
         }
         function hit() {
             const p = document.getElementById('prank');
             p.style.display = 'flex';
-            setTimeout(() => { p.style.display = 'none'; document.getElementById('dot').style.display = 'none'; }, 2500);
+            setTimeout(() => { 
+                p.style.display = 'none'; 
+                document.getElementById('dot').style.display = 'none'; 
+            }, 2500);
         }
     </script>
 </body>
