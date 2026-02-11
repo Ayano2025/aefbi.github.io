@@ -182,6 +182,8 @@
         <div class="ui-btn" onclick="startDot()">поймай точку</div>
         <div class="ui-btn" onclick="toggleTheme()" id="theme-btn">Светлый режим</div>
     </div>
+      <div class="ui-btn" onclick="toggleTheme()" id="theme-btn">Темный режим</div>
+    </div>
 
     <div id="dot" onclick="hit()"></div>
     <div id="prank">на разработке</div>
@@ -232,7 +234,7 @@
             const body = document.body;
             const btn = document.getElementById('theme-btn');
             body.classList.toggle('light-mode');
-            btn.innerText = body.classList.contains('light-mode') ? 'DARK_MODE' : 'LIGHT_MODE';
+            btn.innerText = body.classList.contains('light-mode') ? 'Темный режим' : 'Светлый режим';
         }
 
         function startDot() {
