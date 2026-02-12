@@ -1,4 +1,4 @@
-# aefbi.github.io
+# aefbi
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -246,7 +246,7 @@
     <div class="container">
         <header>
             <h1 class="nickname">@aefbi</h1>
-            <p class="sub-nickname">и зачем ему писать</p>
+            <p class="sub-nickname">Personal Contact Protocol</p>
         </header>
 
         <div class="rules-grid">
@@ -278,89 +278,81 @@
     </div>
 
     <script>
-    // Работа курсора (Мышь + Тачпад/Экран)
-    const dot = document.getElementById('cursor-dot');
-    const outline = document.getElementById('cursor-outline');
+        // Работа курсора
+        const dot = document.getElementById('cursor-dot');
+        const outline = document.getElementById('cursor-outline');
 
-    const moveCursor = (e) => {
-        // Проверяем, это касание (touch) или мышь
-        const posX = e.touches ? e.touches[0].clientX : e.clientX;
-        const posY = e.touches ? e.touches[0].clientY : e.clientY;
+        window.addEventListener('mousemove', (e) => {
+            const posX = e.clientX;
+            const posY = e.clientY;
 
-        dot.style.left = `${posX}px`;
-        dot.style.top = `${posY}px`;
+            dot.style.left = `${posX}px`;
+            dot.style.top = `${posY}px`;
 
-        // Плавное следование кольца
-        outline.animate({
-            left: `${posX}px`,
-            top: `${posY}px`
-        }, { duration: 400, fill: "forwards" });
-    };
+            // Кольцо движется чуть медленнее для плавности
+            outline.animate({
+                left: `${posX}px`,
+                top: `${posY}px`
+            }, { duration: 500, fill: "forwards" });
+        });
 
-    // Слушатели для ПК
-    window.addEventListener('mousemove', moveCursor);
-    
-    // Слушатели для Телефонов
-    window.addEventListener('touchstart', moveCursor);
-    window.addEventListener('touchmove', moveCursor);
+        // Снег
+        const canvas = document.getElementById('snow-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height, snowflakes = [];
 
-    // Снег (без изменений)
-    const canvas = document.getElementById('snow-canvas');
-    const ctx = canvas.getContext('2d');
-    let width, height, snowflakes = [];
-
-    function init() {
-        width = window.innerWidth;
-        height = window.innerHeight;
-        canvas.width = width;
-        canvas.height = height;
-        snowflakes = [];
-        for (let i = 0; i < 120; i++) {
-            snowflakes.push({
-                x: Math.random() * width,
-                y: Math.random() * height,
-                r: Math.random() * 2 + 1,
-                v: Math.random() * 1 + 0.3
-            });
+        function init() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+            snowflakes = [];
+            for (let i = 0; i < 120; i++) {
+                snowflakes.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    r: Math.random() * 2 + 1,
+                    v: Math.random() * 1 + 0.3
+                });
+            }
         }
-    }
 
-    function draw() {
-        ctx.clearRect(0, 0, width, height);
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-        ctx.beginPath();
-        for (let i = 0; i < snowflakes.length; i++) {
-            let p = snowflakes[i];
-            ctx.moveTo(p.x, p.y);
-            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2, true);
+        function draw() {
+            ctx.clearRect(0, 0, width, height);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+            ctx.beginPath();
+            for (let i = 0; i < snowflakes.length; i++) {
+                let p = snowflakes[i];
+                ctx.moveTo(p.x, p.y);
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2, true);
+            }
+            ctx.fill();
+            update();
         }
-        ctx.fill();
-        update();
-    }
 
-    function update() {
-        for (let i = 0; i < snowflakes.length; i++) {
-            let p = snowflakes[i];
-            p.y += p.v;
-            if (p.y > height) snowflakes[i].y = -10;
+        function update() {
+            for (let i = 0; i < snowflakes.length; i++) {
+                let p = snowflakes[i];
+                p.y += p.v;
+                if (p.y > height) snowflakes[i].y = -10;
+            }
         }
-    }
 
-    function loop() { draw(); requestAnimationFrame(loop); }
-    window.addEventListener('resize', init);
-    init(); loop();
+        function loop() { draw(); requestAnimationFrame(loop); }
+        window.addEventListener('resize', init);
+        init(); loop();
 
-    function toggleTheme() {
-        const body = document.body;
-        const btn = document.getElementById('themeBtn');
-        if (body.getAttribute('data-theme') === 'light') {
-            body.removeAttribute('data-theme');
-            btn.innerText = '🌓 LIGHT MODE';
-        } else {
-            body.setAttribute('data-theme', 'light');
-            btn.innerText = '🌗 DARK MODE';
+        function toggleTheme() {
+            const body = document.body;
+            const btn = document.getElementById('themeBtn');
+            if (body.getAttribute('data-theme') === 'light') {
+                body.removeAttribute('data-theme');
+                btn.innerText = '🌓 LIGHT MODE';
+            } else {
+                body.setAttribute('data-theme', 'light');
+                btn.innerText = '🌗 DARK MODE';
+            }
         }
-    }
-</script>
+    </script>
 </body>
 </html>
