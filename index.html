@@ -8,29 +8,29 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #05080f;
+            --bg-color: #0a111a;
             --text-color: #ffffff;
-            --accent-color: #38bdf8;
-            --card-bg: rgba(15, 23, 42, 0.6);
-            --border-color: rgba(255, 255, 255, 0.1);
-            --ray-color: rgba(56, 189, 248, 0.15);
+            --accent-color: #7dd3fc; /* Небесно-голубой под фон */
+            --card-bg: rgba(15, 23, 42, 0.4); /* Прозрачное стекло */
+            --border-color: rgba(125, 211, 252, 0.2);
+            --ray-color: rgba(125, 211, 252, 0.15);
         }
 
         [data-theme="light"] {
-            --bg-color: #f8fafc;
-            --text-color: #0f172a;
+            --bg-color: #e0f2fe;
+            --text-color: #0369a1;
             --accent-color: #0284c7;
-            --card-bg: rgba(255, 255, 255, 0.7);
-            --border-color: rgba(0, 0, 0, 0.1);
-            --ray-color: rgba(2, 132, 199, 0.1);
+            --card-bg: rgba(255, 255, 255, 0.5);
+            --border-color: rgba(2, 132, 199, 0.2);
+            --ray-color: rgba(2, 132, 199, 0.05);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif; /* Применяем Poppins */
-            transition: all 0.4s ease;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         body {
@@ -40,28 +40,28 @@
             min-height: 100vh;
         }
 
-        /* Декоративные лучи */
+        /* Декоративные лучи с эффектом зимнего сияния */
         .glow-ray {
             position: fixed;
-            width: 40vw;
-            height: 100vh;
-            top: 0;
+            width: 50vw;
+            height: 120vh;
+            top: -10vh;
             z-index: -1;
             pointer-events: none;
-            background: radial-gradient(circle, var(--ray-color) 0%, transparent 70%);
-            filter: blur(80px);
-            animation: pulseRay 6s infinite alternate ease-in-out;
+            background: radial-gradient(ellipse at center, var(--ray-color) 0%, transparent 75%);
+            filter: blur(100px);
+            animation: pulseRay 8s infinite alternate ease-in-out;
         }
 
-        .ray-left { left: -15vw; }
-        .ray-right { right: -15vw; animation-delay: 3s; }
+        .ray-left { left: -20vw; transform: rotate(-15deg); }
+        .ray-right { right: -20vw; transform: rotate(15deg); animation-delay: 4s; }
 
         @keyframes pulseRay {
-            0% { opacity: 0.3; transform: scale(1); }
-            100% { opacity: 0.8; transform: scale(1.2); }
+            0% { opacity: 0.2; transform: scale(1) rotate(-10deg); }
+            100% { opacity: 0.6; transform: scale(1.1) rotate(5deg); }
         }
 
-        /* Видео фон */
+        /* Фоновое видео/изображение */
         .video-background {
             position: fixed;
             top: 0;
@@ -75,14 +75,13 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            filter: brightness(0.3);
+            filter: brightness(0.5) contrast(1.1); /* Подтягиваем сочность под скриншот */
         }
 
-        /* Контент */
         .container {
-            max-width: 800px;
+            max-width: 850px;
             margin: 0 auto;
-            padding: 60px 20px;
+            padding: 80px 20px;
             position: relative;
         }
 
@@ -91,109 +90,120 @@
             right: 30px;
             top: 30px;
             background: var(--card-bg);
-            border: 2px solid var(--accent-color);
+            border: 1px solid var(--border-color);
             color: var(--text-color);
-            padding: 12px 20px;
-            border-radius: 15px;
+            padding: 10px 25px;
+            border-radius: 50px;
             cursor: pointer;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(20px);
             z-index: 100;
             font-weight: 600;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
         }
 
         header {
             text-align: center;
-            margin-bottom: 60px;
-            animation: fadeInDown 1s ease;
+            margin-bottom: 70px;
+            animation: fadeInDown 1.2s ease;
         }
 
         .nickname {
-            font-size: 4rem;
-            font-weight: 800; /* Экстра жирный */
-            color: var(--accent-color);
-            letter-spacing: -2px;
-            margin-bottom: 5px;
-            text-transform: uppercase;
+            font-size: 4.5rem;
+            font-weight: 800;
+            color: var(--text-color);
+            letter-spacing: -3px;
+            margin-bottom: 10px;
+            text-shadow: 0 0 30px rgba(125, 211, 252, 0.4);
         }
 
         .sub-nickname {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 600;
-            opacity: 0.7;
+            color: var(--accent-color);
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 4px;
         }
 
         .rules-grid {
-            display: flex;
-            flex-direction: column;
+            display: grid;
             gap: 25px;
         }
 
         .rule-card {
             background: var(--card-bg);
-            backdrop-filter: blur(15px);
-            padding: 35px;
-            border-radius: 24px;
+            backdrop-filter: blur(25px); /* Глубокое размытие как на фото */
+            padding: 40px;
+            border-radius: 30px;
             border: 1px solid var(--border-color);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
             animation: fadeInUp 0.8s ease both;
         }
 
         .rule-card:hover {
             border-color: var(--accent-color);
-            transform: translateY(-5px);
+            transform: scale(1.02);
+            background: rgba(15, 23, 42, 0.5);
         }
 
         .rule-title {
-            font-size: 1.6rem;
+            font-size: 1.4rem;
             font-weight: 800;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
             color: var(--accent-color);
+            text-transform: uppercase;
         }
 
         .rule-card p {
             font-weight: 400;
-            line-height: 1.6;
+            line-height: 1.7;
             font-size: 1.1rem;
+            opacity: 0.9;
         }
 
         .quote {
             font-style: italic;
             font-weight: 600;
-            font-size: 1rem;
-            margin-top: 20px;
-            padding-left: 15px;
-            border-left: 4px solid var(--accent-color);
-            opacity: 0.9;
+            font-size: 0.95rem;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+            color: var(--accent-color);
+            opacity: 0.8;
         }
 
         .cta-button {
             display: inline-block;
             margin-top: 30px;
-            padding: 20px 50px;
+            padding: 22px 60px;
             background: var(--accent-color);
-            color: #fff;
+            color: #0a111a;
             text-decoration: none;
-            border-radius: 18px;
+            border-radius: 20px;
             font-weight: 800;
-            font-size: 1.2rem;
-            box-shadow: 0 10px 30px rgba(56, 189, 248, 0.4);
+            font-size: 1.1rem;
+            box-shadow: 0 10px 40px rgba(125, 211, 252, 0.3);
+            text-transform: uppercase;
         }
 
         .cta-button:hover {
-            transform: scale(1.05);
-            filter: brightness(1.1);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(125, 211, 252, 0.5);
         }
 
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(40px); }
+            from { opacity: 0; transform: translateY(50px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-40px); }
+            from { opacity: 0; transform: translateY(-50px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            .nickname { font-size: 3rem; }
+            .rule-card { padding: 25px; }
         }
     </style>
 </head>
@@ -202,7 +212,7 @@
     <div class="glow-ray ray-left"></div>
     <div class="glow-ray ray-right"></div>
 
-    <button class="theme-switch" onclick="toggleTheme()" id="themeBtn">🌓 MODE</button>
+    <button class="theme-switch" onclick="toggleTheme()" id="themeBtn">LIGHT MODE</button>
 
     <div class="video-background">
         <video autoplay muted loop playsinline>
@@ -219,25 +229,25 @@
         <div class="rules-grid">
             <div class="rule-card" style="animation-delay: 0.1s;">
                 <div class="rule-title">01. ПИШИ ПО ДЕЛУ</div>
-                <p>Не трать время на пустые приветствия. Сразу к сути вопроса.</p>
+                <p>Уважайте личное время. Формулируйте мысль сразу, без бесконечных "привет", "как дела".</p>
                 <div class="quote">«Умение вести разговор — это талант, но умение вовремя замолчать — это мудрость.»</div>
             </div>
 
             <div class="rule-card" style="animation-delay: 0.2s;">
                 <div class="rule-title">02. УГРОЗЫ = ЧС</div>
-                <p>Любая агрессия фильтруется мгновенной блокировкой без права на разбан.</p>
+                <p>Агрессия — признак слабости. Любое проявление неуважения карается блокировкой.</p>
                 <div class="quote">«Там, где кончаются аргументы, начинаются угрозы.»</div>
             </div>
 
             <div class="rule-card" style="animation-delay: 0.3s;">
                 <div class="rule-title">03. БЕЗ ПОПРОШАЙНИЧЕСТВА</div>
-                <p>Здесь не благотворительный фонд. Уважайте чужой труд и границы.</p>
+                <p>Просьбы о деньгах, услугах или подарках игнорируются. Цените свое достоинство.</p>
                 <div class="quote">«Рука дающего не оскудеет, но рука просящего без нужды — утомляет.»</div>
             </div>
 
-            <div class="rule-card" style="animation-delay: 0.4s; text-align: center; border: 2px solid var(--accent-color);">
+            <div class="rule-card" style="animation-delay: 0.4s; text-align: center;">
                 <div class="rule-title">04. ВОТ И ВСЁ</div>
-                <p>Ознакомлен? Теперь можем начинать диалог.</p>
+                <p>Если ты здесь и прочитал это — значит, мы найдем общий язык.</p>
                 <div class="quote">«Относитесь к людям так, как хотите, чтобы они относились к вам.»</div>
                 <a href="https://t.me/aefbi" class="cta-button" target="_blank">НАПИСАТЬ МНЕ</a>
             </div>
@@ -250,10 +260,10 @@
             const btn = document.getElementById('themeBtn');
             if (body.getAttribute('data-theme') === 'light') {
                 body.removeAttribute('data-theme');
-                btn.innerText = '🌓 MODE';
+                btn.innerText = 'LIGHT MODE';
             } else {
                 body.setAttribute('data-theme', 'light');
-                btn.innerText = '🌗 MODE';
+                btn.innerText = 'DARK MODE';
             }
         }
     </script>
