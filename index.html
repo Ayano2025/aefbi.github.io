@@ -9,17 +9,17 @@
     <style>
         :root {
             --bg-color: #05080f;
-            --text-color: #ffffff;
+            --text-color: rgba(255, 255, 255, 0.9); /* Прозрачный текст */
             --accent-color: #7dd3fc; 
-            --card-bg: rgba(15, 23, 42, 0.4); 
+            --card-bg: rgba(15, 23, 42, 0.3); /* Сильное стекло */
             --border-color: rgba(125, 211, 252, 0.15);
         }
 
         [data-theme="light"] {
             --bg-color: #f0f9ff;
-            --text-color: #0c4a6e;
+            --text-color: rgba(12, 74, 110, 0.9);
             --accent-color: #0284c7;
-            --card-bg: rgba(255, 255, 255, 0.5);
+            --card-bg: rgba(255, 255, 255, 0.4);
             --border-color: rgba(2, 132, 199, 0.2);
         }
 
@@ -28,64 +28,49 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Poppins', sans-serif;
-            /* Убираем стандартный курсор */
-            cursor: none !important;
+            cursor: none !important; /* Убираем стандартный курсор */
         }
 
-        /* Кастомный скроллбар */
-        ::-webkit-scrollbar {
-            width: 5px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--bg-color);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--accent-color);
-            border-radius: 10px;
-        }
+        /* Тонкий кастомный скроллбар */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: var(--bg-color); }
+        ::-webkit-scrollbar-thumb { background: var(--accent-color); border-radius: 10px; }
 
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
             overflow-x: hidden;
             min-height: 100vh;
-            animation: entryBlur 1.5s ease-out;
+            animation: entry 1.5s ease-out;
         }
 
-        @keyframes entryBlur {
-            from { opacity: 0; filter: blur(15px); }
+        @keyframes entry {
+            from { opacity: 0; filter: blur(10px); }
             to { opacity: 1; filter: blur(0); }
         }
 
-        /* Кастомный курсор */
+        /* Курсор */
         #cursor-dot, #cursor-outline {
             position: fixed;
-            top: 0;
-            left: 0;
+            top: 0; left: 0;
             transform: translate(-50%, -50%);
             border-radius: 50%;
             z-index: 9999;
             pointer-events: none;
-            transition: transform 0.1s ease-out, background-color 0.3s, border-color 0.3s;
         }
-        #cursor-dot {
-            width: 8px;
-            height: 8px;
-            background-color: var(--accent-color);
-        }
-        #cursor-outline {
-            width: 40px;
-            height: 40px;
+        #cursor-dot { width: 6px; height: 6px; background-color: var(--accent-color); }
+        #cursor-outline { 
+            width: 30px; height: 30px; 
             border: 2px solid var(--accent-color);
+            transition: transform 0.15s ease-out;
         }
 
+        /* Снег на заднем плане */
         #snow-canvas {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0; /* Снег за карточками */
             pointer-events: none;
         }
 
@@ -94,145 +79,115 @@
             margin: 0 auto;
             padding: 80px 20px;
             position: relative;
+            z-index: 1; /* Контент над снегом */
         }
 
         .theme-switch {
             position: fixed;
-            right: 20px;
-            top: 20px;
+            right: 20px; top: 20px;
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             color: var(--text-color);
             padding: 10px 20px;
             border-radius: 50px;
-            backdrop-filter: blur(15px);
+            backdrop-filter: blur(10px);
             z-index: 100;
             font-weight: 800;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
-        /* Глитч эффект на никнейм */
+        /* Глитч-никнейм */
         .nickname {
             font-size: clamp(3rem, 10vw, 4.5rem);
             font-weight: 800;
-            color: var(--text-color);
+            color: #fff;
             text-transform: uppercase;
-            letter-spacing: -2px;
             position: relative;
             display: inline-block;
+            margin-bottom: 10px;
         }
-
         .nickname::before, .nickname::after {
             content: "@aefbi";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0.8;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
         }
-
-        .nickname::before {
-            color: #ff00c1;
-            z-index: -1;
-            animation: glitch 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
-        }
-
-        .nickname::after {
-            color: #00fff9;
-            z-index: -2;
-            animation: glitch 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both infinite;
-        }
+        .nickname::before { color: #ff00c1; z-index: -1; animation: glitch 0.5s infinite; opacity: 0.7; }
+        .nickname::after { color: #00fff9; z-index: -2; animation: glitch 0.5s infinite reverse; opacity: 0.7; }
 
         @keyframes glitch {
             0% { transform: translate(0); }
-            20% { transform: translate(-3px, 3px); }
-            40% { transform: translate(-3px, -3px); }
-            60% { transform: translate(3px, 3px); }
-            80% { transform: translate(3px, -3px); }
+            25% { transform: translate(-2px, 2px); }
+            50% { transform: translate(2px, -2px); }
+            75% { transform: translate(-2px, -2px); }
             100% { transform: translate(0); }
         }
 
         .sub-nickname {
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             font-weight: 600;
             color: var(--accent-color);
-            letter-spacing: 4px;
-            margin-top: 10px;
+            letter-spacing: 5px;
             text-transform: uppercase;
+            margin-bottom: 50px;
+            opacity: 0.8;
         }
 
-        .rules-grid {
-            display: grid;
-            gap: 20px;
-        }
-
+        /* Карточки с эффектом матового стекла */
         .rule-card {
             background: var(--card-bg);
-            backdrop-filter: blur(25px);
+            backdrop-filter: blur(12px); /* Снег за карточкой будет размыт */
+            -webkit-backdrop-filter: blur(12px);
             padding: 35px;
-            border-radius: 30px;
+            border-radius: 25px;
             border: 1px solid var(--border-color);
-            transition: all 0.4s ease;
+            margin-bottom: 20px;
+            transition: 0.3s;
         }
-
         .rule-card:hover {
+            transform: scale(1.01);
             border-color: var(--accent-color);
-            transform: translateX(10px);
-            background: rgba(125, 211, 252, 0.03);
         }
 
         .rule-title {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: 800;
-            margin-bottom: 12px;
             color: var(--accent-color);
+            margin-bottom: 10px;
         }
 
         .rule-card p {
-            font-weight: 400;
-            font-size: 1.05rem;
+            font-size: 1rem;
             line-height: 1.6;
-            opacity: 0.8;
+            opacity: 0.7; /* Прозрачность текста */
         }
 
         .quote {
             font-style: italic;
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             margin-top: 20px;
             padding-left: 15px;
-            border-left: 3px solid var(--accent-color);
+            border-left: 2px solid var(--accent-color);
             color: var(--accent-color);
+            opacity: 0.6;
         }
 
         .cta-button {
             display: inline-block;
-            margin-top: 30px;
-            padding: 22px 60px;
+            margin-top: 20px;
+            padding: 18px 50px;
             background: var(--accent-color);
             color: #05080f;
             text-decoration: none;
-            border-radius: 20px;
+            border-radius: 15px;
             font-weight: 800;
-            font-size: 1.1rem;
-            box-shadow: 0 0 30px rgba(125, 211, 252, 0.3);
-            transition: all 0.3s ease;
             text-transform: uppercase;
+            box-shadow: 0 0 20px rgba(125, 211, 252, 0.2);
         }
 
-        /* Чтобы курсор реагировал на кнопки */
-        .cta-button:hover ~ #cursor-outline, 
-        .theme-switch:hover ~ #cursor-outline {
-            transform: translate(-50%, -50%) scale(1.5);
-            background-color: rgba(125, 211, 252, 0.1);
+        @media (max-width: 600px) {
+            #cursor-dot, #cursor-outline { display: block; } /* Оставляем на мобилах */
+            .nickname { font-size: 2.5rem; }
         }
-
     </style>
 </head>
 <body>
@@ -243,13 +198,13 @@
     <button class="theme-switch" onclick="toggleTheme()" id="themeBtn">🌓 LIGHT MODE</button>
     <canvas id="snow-canvas"></canvas>
 
-    <div class="container">
+    <div class="container" style="text-align: center;">
         <header>
             <h1 class="nickname">@aefbi</h1>
             <p class="sub-nickname">Personal Contact Protocol</p>
         </header>
 
-        <div class="rules-grid">
+        <div class="rules-grid" style="text-align: left;">
             <div class="rule-card">
                 <div class="rule-title">01. ПИШИ ПО ДЕЛУ</div>
                 <p>Не трать время на пустые приветствия. Сразу к сути вопроса.</p>
@@ -268,7 +223,7 @@
                 <div class="quote">«Рука дающего не оскудеет, но рука просящего без нужды — утомляет.»</div>
             </div>
 
-            <div class="rule-card" style="text-align: center; border: 2px solid var(--accent-color);">
+            <div class="rule-card" style="text-align: center; border: 1px solid var(--accent-color);">
                 <div class="rule-title">04. ВОТ И ВСЁ</div>
                 <p>Ознакомлен? Теперь можем начинать диалог.</p>
                 <div class="quote">«Относитесь к людям так, как хотите, чтобы они относились к вам.»</div>
@@ -278,78 +233,58 @@
     </div>
 
     <script>
-        // Работа курсора
+        // Курсор (Мышь + Тач)
         const dot = document.getElementById('cursor-dot');
         const outline = document.getElementById('cursor-outline');
 
-        window.addEventListener('mousemove', (e) => {
-            const posX = e.clientX;
-            const posY = e.clientY;
+        const moveCursor = (e) => {
+            const x = e.touches ? e.touches[0].clientX : e.clientX;
+            const y = e.touches ? e.touches[0].clientY : e.clientY;
+            dot.style.left = `${x}px`;
+            dot.style.top = `${y}px`;
+            outline.animate({ left: `${x}px`, top: `${y}px` }, { duration: 400, fill: "forwards" });
+        };
 
-            dot.style.left = `${posX}px`;
-            dot.style.top = `${posY}px`;
-
-            // Кольцо движется чуть медленнее для плавности
-            outline.animate({
-                left: `${posX}px`,
-                top: `${posY}px`
-            }, { duration: 500, fill: "forwards" });
-        });
+        window.addEventListener('mousemove', moveCursor);
+        window.addEventListener('touchmove', moveCursor);
 
         // Снег
         const canvas = document.getElementById('snow-canvas');
         const ctx = canvas.getContext('2d');
-        let width, height, snowflakes = [];
+        let w, h, particles = [];
 
         function init() {
-            width = window.innerWidth;
-            height = window.innerHeight;
-            canvas.width = width;
-            canvas.height = height;
-            snowflakes = [];
-            for (let i = 0; i < 120; i++) {
-                snowflakes.push({
-                    x: Math.random() * width,
-                    y: Math.random() * height,
-                    r: Math.random() * 2 + 1,
-                    v: Math.random() * 1 + 0.3
-                });
-            }
+            w = window.innerWidth; h = window.innerHeight;
+            canvas.width = w; canvas.height = h;
+            particles = [];
+            for(let i=0; i<100; i++) particles.push({x: Math.random()*w, y: Math.random()*h, r: Math.random()*2+1, v: Math.random()*1+0.5});
         }
 
         function draw() {
-            ctx.clearRect(0, 0, width, height);
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+            ctx.clearRect(0,0,w,h);
+            ctx.fillStyle = "rgba(255,255,255,0.5)";
             ctx.beginPath();
-            for (let i = 0; i < snowflakes.length; i++) {
-                let p = snowflakes[i];
+            particles.forEach(p => {
                 ctx.moveTo(p.x, p.y);
-                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2, true);
-            }
-            ctx.fill();
-            update();
-        }
-
-        function update() {
-            for (let i = 0; i < snowflakes.length; i++) {
-                let p = snowflakes[i];
+                ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
                 p.y += p.v;
-                if (p.y > height) snowflakes[i].y = -10;
-            }
+                if(p.y > h) p.y = -10;
+            });
+            ctx.fill();
+            requestAnimationFrame(draw);
         }
 
-        function loop() { draw(); requestAnimationFrame(loop); }
         window.addEventListener('resize', init);
-        init(); loop();
+        init(); draw();
 
         function toggleTheme() {
-            const body = document.body;
+            const b = document.body;
             const btn = document.getElementById('themeBtn');
-            if (body.getAttribute('data-theme') === 'light') {
-                body.removeAttribute('data-theme');
+            if(b.getAttribute('data-theme') === 'light') {
+                b.removeAttribute('data-theme');
                 btn.innerText = '🌓 LIGHT MODE';
             } else {
-                body.setAttribute('data-theme', 'light');
+                b.setAttribute('data-theme', 'light');
                 btn.innerText = '🌗 DARK MODE';
             }
         }
