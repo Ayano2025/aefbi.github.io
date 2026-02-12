@@ -8,18 +8,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #0d1117;
+            --bg-color: #05080f;
             --text-color: #ffffff;
             --accent-color: #7dd3fc; 
-            --card-bg: rgba(15, 23, 42, 0.5); 
-            --border-color: rgba(125, 211, 252, 0.2);
+            --card-bg: rgba(15, 23, 42, 0.4); 
+            --border-color: rgba(125, 211, 252, 0.15);
         }
 
         [data-theme="light"] {
             --bg-color: #f0f9ff;
             --text-color: #0c4a6e;
             --accent-color: #0284c7;
-            --card-bg: rgba(255, 255, 255, 0.6);
+            --card-bg: rgba(255, 255, 255, 0.5);
             --border-color: rgba(2, 132, 199, 0.2);
         }
 
@@ -28,7 +28,20 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Poppins', sans-serif;
-            transition: background 0.4s, color 0.4s;
+            /* Убираем стандартный курсор */
+            cursor: none !important;
+        }
+
+        /* Кастомный скроллбар */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-color);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--accent-color);
+            border-radius: 10px;
         }
 
         body {
@@ -36,13 +49,34 @@
             color: var(--text-color);
             overflow-x: hidden;
             min-height: 100vh;
-            /* Плавное появление всей страницы */
             animation: entryBlur 1.5s ease-out;
         }
 
         @keyframes entryBlur {
-            from { opacity: 0; filter: blur(10px); transform: scale(1.02); }
-            to { opacity: 1; filter: blur(0); transform: scale(1); }
+            from { opacity: 0; filter: blur(15px); }
+            to { opacity: 1; filter: blur(0); }
+        }
+
+        /* Кастомный курсор */
+        #cursor-dot, #cursor-outline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
+            transition: transform 0.1s ease-out, background-color 0.3s, border-color 0.3s;
+        }
+        #cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-color);
+        }
+        #cursor-outline {
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--accent-color);
         }
 
         #snow-canvas {
@@ -60,7 +94,6 @@
             margin: 0 auto;
             padding: 80px 20px;
             position: relative;
-            z-index: 1;
         }
 
         .theme-switch {
@@ -72,12 +105,10 @@
             color: var(--text-color);
             padding: 10px 20px;
             border-radius: 50px;
-            cursor: pointer;
             backdrop-filter: blur(15px);
             z-index: 100;
             font-weight: 800;
             font-size: 0.75rem;
-            letter-spacing: 1px;
         }
 
         header {
@@ -85,21 +116,55 @@
             margin-bottom: 60px;
         }
 
+        /* Глитч эффект на никнейм */
         .nickname {
             font-size: clamp(3rem, 10vw, 4.5rem);
             font-weight: 800;
-            color: var(--accent-color);
+            color: var(--text-color);
             text-transform: uppercase;
             letter-spacing: -2px;
-            line-height: 1;
+            position: relative;
+            display: inline-block;
+        }
+
+        .nickname::before, .nickname::after {
+            content: "@aefbi";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.8;
+        }
+
+        .nickname::before {
+            color: #ff00c1;
+            z-index: -1;
+            animation: glitch 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
+        }
+
+        .nickname::after {
+            color: #00fff9;
+            z-index: -2;
+            animation: glitch 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both infinite;
+        }
+
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            20% { transform: translate(-3px, 3px); }
+            40% { transform: translate(-3px, -3px); }
+            60% { transform: translate(3px, 3px); }
+            80% { transform: translate(3px, -3px); }
+            100% { transform: translate(0); }
         }
 
         .sub-nickname {
             font-size: 0.9rem;
             font-weight: 600;
-            opacity: 0.7;
+            color: var(--accent-color);
             letter-spacing: 4px;
             margin-top: 10px;
+            text-transform: uppercase;
         }
 
         .rules-grid {
@@ -109,17 +174,17 @@
 
         .rule-card {
             background: var(--card-bg);
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(25px);
             padding: 35px;
-            border-radius: 25px;
+            border-radius: 30px;
             border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
+            transition: all 0.4s ease;
         }
 
         .rule-card:hover {
-            transform: translateY(-5px);
             border-color: var(--accent-color);
-            background: rgba(125, 211, 252, 0.05);
+            transform: translateX(10px);
+            background: rgba(125, 211, 252, 0.03);
         }
 
         .rule-title {
@@ -133,6 +198,7 @@
             font-weight: 400;
             font-size: 1.05rem;
             line-height: 1.6;
+            opacity: 0.8;
         }
 
         .quote {
@@ -140,37 +206,41 @@
             font-weight: 600;
             font-size: 0.9rem;
             margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid var(--border-color);
+            padding-left: 15px;
+            border-left: 3px solid var(--accent-color);
             color: var(--accent-color);
         }
 
         .cta-button {
             display: inline-block;
             margin-top: 30px;
-            padding: 20px 50px;
+            padding: 22px 60px;
             background: var(--accent-color);
-            color: #0d1117;
+            color: #05080f;
             text-decoration: none;
-            border-radius: 18px;
+            border-radius: 20px;
             font-weight: 800;
             font-size: 1.1rem;
-            box-shadow: 0 10px 30px rgba(125, 211, 252, 0.3);
+            box-shadow: 0 0 30px rgba(125, 211, 252, 0.3);
             transition: all 0.3s ease;
             text-transform: uppercase;
         }
 
-        .cta-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 15px 40px rgba(125, 211, 252, 0.5);
+        /* Чтобы курсор реагировал на кнопки */
+        .cta-button:hover ~ #cursor-outline, 
+        .theme-switch:hover ~ #cursor-outline {
+            transform: translate(-50%, -50%) scale(1.5);
+            background-color: rgba(125, 211, 252, 0.1);
         }
 
     </style>
 </head>
 <body>
 
+    <div id="cursor-dot"></div>
+    <div id="cursor-outline"></div>
+
     <button class="theme-switch" onclick="toggleTheme()" id="themeBtn">🌓 LIGHT MODE</button>
-    
     <canvas id="snow-canvas"></canvas>
 
     <div class="container">
@@ -208,6 +278,25 @@
     </div>
 
     <script>
+        // Работа курсора
+        const dot = document.getElementById('cursor-dot');
+        const outline = document.getElementById('cursor-outline');
+
+        window.addEventListener('mousemove', (e) => {
+            const posX = e.clientX;
+            const posY = e.clientY;
+
+            dot.style.left = `${posX}px`;
+            dot.style.top = `${posY}px`;
+
+            // Кольцо движется чуть медленнее для плавности
+            outline.animate({
+                left: `${posX}px`,
+                top: `${posY}px`
+            }, { duration: 500, fill: "forwards" });
+        });
+
+        // Снег
         const canvas = document.getElementById('snow-canvas');
         const ctx = canvas.getContext('2d');
         let width, height, snowflakes = [];
@@ -218,19 +307,19 @@
             canvas.width = width;
             canvas.height = height;
             snowflakes = [];
-            for (let i = 0; i < 150; i++) {
+            for (let i = 0; i < 120; i++) {
                 snowflakes.push({
                     x: Math.random() * width,
                     y: Math.random() * height,
-                    r: Math.random() * 3 + 1,
-                    v: Math.random() * 1 + 0.5
+                    r: Math.random() * 2 + 1,
+                    v: Math.random() * 1 + 0.3
                 });
             }
         }
 
         function draw() {
             ctx.clearRect(0, 0, width, height);
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
             ctx.beginPath();
             for (let i = 0; i < snowflakes.length; i++) {
                 let p = snowflakes[i];
@@ -245,21 +334,13 @@
             for (let i = 0; i < snowflakes.length; i++) {
                 let p = snowflakes[i];
                 p.y += p.v;
-                p.x += Math.sin(p.y / 50) * 0.5;
-                if (p.y > height) {
-                    snowflakes[i] = { x: Math.random() * width, y: -10, r: p.r, v: p.v };
-                }
+                if (p.y > height) snowflakes[i].y = -10;
             }
         }
 
-        function loop() {
-            draw();
-            requestAnimationFrame(loop);
-        }
-
+        function loop() { draw(); requestAnimationFrame(loop); }
         window.addEventListener('resize', init);
-        init();
-        loop();
+        init(); loop();
 
         function toggleTheme() {
             const body = document.body;
