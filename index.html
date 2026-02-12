@@ -4,250 +4,231 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@aefbi | Square Bold</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@900&display=swap" rel="stylesheet">
+    <title>Contact @aefbi</title>
     <style>
+        /* Переменные для тем */
         :root {
-            /* ТЕМНАЯ ТЕМА ПО УМОЛЧАНИЮ */
-            --bg-color: #000b1a; 
-            --accent: #007AFF;
-            --glass: rgba(255, 255, 255, 0.05);
-            --text-main: #ffffff;
-            --text-sec: #a1a1a6;
-            --card-border: #007AFF;
-            --neon-glow: 0 0 15px rgba(0, 122, 255, 0.8);
-            --ray-opacity: 0.35;
+            --bg-color: #0f172a;
+            --text-color: #f8fafc;
+            --accent-color: #38bdf8;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --border-color: rgba(255, 255, 255, 0.1);
         }
 
-        body.light-mode {
-            --bg-color: #ffffff;
-            --text-main: #000000;
-            --text-sec: #444444;
-            --glass: rgba(255, 255, 255, 0.4);
-            --card-border: rgba(0, 122, 255, 0.4);
-            --neon-glow: transparent;
-            --ray-opacity: 0.22;
+        [data-theme="light"] {
+            --bg-color: #f1f5f9;
+            --text-color: #0f172a;
+            --accent-color: #0284c7;
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --border-color: rgba(0, 0, 0, 0.1);
         }
 
-        /* УБИРАЕМ ВСЕ ЗАКРУГЛЕНИЯ */
-        * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
-            border-radius: 0 !important; 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            transition: background 0.3s, color 0.3s;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg-color);
+            background-color: var(--bg-color);
+            color: var(--text-color);
             overflow-x: hidden;
-            scroll-snap-type: y mandatory;
-            height: 100vh;
-            transition: background 0.8s ease;
-            -webkit-font-smoothing: antialiased;
         }
 
-        .section {
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            scroll-snap-align: start;
-            position: relative;
+        /* Видео фон */
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
             overflow: hidden;
         }
 
-        /* Плавные лучи */
-        .light-ray {
-            position: absolute;
-            width: 85vw;
-            height: 85vh;
-            background: radial-gradient(circle, rgba(0, 122, 255, var(--ray-opacity)) 0%, transparent 70%);
-            filter: blur(100px);
-            opacity: 0;
-            transition: opacity 1.6s ease-in-out, transform 1.6s ease-in-out;
-            pointer-events: none;
-            z-index: 1;
+        .video-background video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.4);
         }
-        .ray-tl { top: -20%; left: -20%; transform: translate(-15%, -15%); }
-        .ray-br { bottom: -20%; right: -20%; transform: translate(15%, 15%); }
 
-        .section.active .light-ray { opacity: 1; transform: translate(0, 0); }
+        [data-theme="light"] .video-background video {
+            filter: brightness(0.8) grayscale(0.2);
+        }
 
-        /* Квадратная карточка */
-        .glass-card {
-            background: var(--glass);
-            backdrop-filter: blur(40px) saturate(180%);
-            -webkit-backdrop-filter: blur(40px) saturate(180%);
-            padding: 60px 40px;
+        /* Контент */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Переключатель темы */
+        .theme-switch {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            border-radius: 50px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        header {
             text-align: center;
-            max-width: 460px;
-            width: 90%;
-            position: relative;
-            z-index: 10;
-            opacity: 0;
-            transition: all 1.2s ease-out;
-            transform: translateY(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 50px;
+            animation: fadeInDown 0.8s ease;
         }
 
-        /* Квадратная неоновая рамка (появляется после света) */
-        .glass-card::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border: 4px solid var(--card-border); /* Чуть толще для брутальности */
-            opacity: 0;
-            transition: opacity 1s ease-in-out 0.9s, box-shadow 0.8s ease; 
-            box-shadow: var(--neon-glow);
-            pointer-events: none;
+        .nickname {
+            font-size: 3rem;
+            color: var(--accent-color);
+            margin-bottom: 5px;
+            text-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
         }
 
-        .section.active .glass-card { opacity: 1; transform: translateY(0); }
-        .section.active .glass-card::after { opacity: 0.8; }
-
-        /* ТЕКСТ: Толстый и Квадратный */
-        h1, h2 { 
-            color: var(--text-main); 
-            transition: 0.8s;
-            text-shadow: var(--neon-glow);
-            text-transform: uppercase;
-            font-weight: 900;
-            line-height: 1;
-            letter-spacing: -2px; /* Сжимаем для плотности */
-        }
-        h1 { font-size: 4rem; margin-bottom: 15px; }
-        h2 { font-size: 2.5rem; margin-bottom: 25px; }
-        
-        p { 
-            color: var(--text-sec); 
-            font-size: 1.2rem; 
-            line-height: 1.4; 
-            transition: 0.8s; 
-            font-weight: 700;
-            text-transform: uppercase;
+        .sub-nickname {
+            font-size: 1rem;
+            opacity: 0.8;
             letter-spacing: 1px;
         }
-        .red { color: #ff3b30; text-shadow: none; }
 
-        /* Кнопки управления */
-        .controls {
-            position: fixed; top: 20px; right: 20px; z-index: 1000;
-            display: flex; flex-direction: column; gap: 4px; align-items: flex-end;
+        /* Карточки пунктов */
+        .rules-grid {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
-        .ui-btn {
-            padding: 12px 20px; 
-            background: #000; 
-            color: #fff;
-            font-size: 11px; cursor: pointer; 
-            border: 1px solid var(--accent);
-            transition: 0.2s; 
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-        body.light-mode .ui-btn { background: #fff; color: #000; }
-        .ui-btn:hover { background: var(--accent); color: white; }
 
-        /* Написать мне Кнопка */
+        .rule-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            animation: fadeInUp 0.6s ease both;
+        }
+
+        .rule-card:nth-child(1) { animation-delay: 0.2s; }
+        .rule-card:nth-child(2) { animation-delay: 0.4s; }
+        .rule-card:nth-child(3) { animation-delay: 0.6s; }
+        .rule-card:nth-child(4) { animation-delay: 0.8s; }
+
+        .rule-title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quote {
+            font-style: italic;
+            font-size: 0.95rem;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed var(--border-color);
+            opacity: 0.7;
+            color: var(--accent-color);
+        }
+
+        /* Кнопка */
         .cta-button {
-            display: inline-block; margin-top: 30px; padding: 18px 40px;
-            background: var(--accent); color: #ffffff !important;
-            text-decoration: none !important; 
-            font-weight: 900; opacity: 0; transform: translateY(10px);
-            transition: all 0.8s ease-in-out 1.2s;
-            box-shadow: var(--neon-glow);
-            z-index: 50; position: relative;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-size: 1.1rem;
+            display: inline-block;
+            margin-top: 20px;
+            padding: 15px 40px;
+            background: var(--accent-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
-        .section.active .cta-button { opacity: 1; transform: translateY(0); }
 
-        /* Квадратная игра */
-        #dot {
-            position: fixed; width: 20px; height: 20px; background: #ff3b30;
-            display: none; cursor: pointer; z-index: 999;
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(56, 189, 248, 0.4);
         }
-        #prank {
-            position: fixed; inset: 0; background: var(--bg-color); display: none;
-            justify-content: center; align-items: center; z-index: 2000;
-            font-size: 5rem; font-weight: 900; color: #ff3b30; text-align: center;
+
+        /* Анимации */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
 
-    <div class="controls">
-        <div class="ui-btn" onclick="startDot()">поймай точку</div>
-        <div class="ui-btn" onclick="toggleTheme()" id="theme-btn">Светлый режим</div>
+    <button class="theme-switch" onclick="toggleTheme()" id="themeBtn">☀️ Режим</button>
+
+    <div class="video-background">
+        <video autoplay muted loop playsinline>
+            <source src="bg.mp4" type="video/mp4">
+        </video>
     </div>
 
-    <div id="dot" onclick="hit()"></div>
-    <div id="prank">иди нах</div>
+    <div class="container">
+        <header>
+            <h1 class="nickname">@aefbi</h1>
+            <p class="sub-nickname">Официальный профиль • Личные сообщения</p>
+        </header>
 
-    <section class="section">
-        <div class="light-ray ray-tl"></div><div class="light-ray ray-br"></div>
-        <div class="glass-card">
-            <h1>@aefbi</h1>
-            <p>и зачем ему писать?</p>
-        </div>
-    </section>
+        <div class="rules-grid">
+            <div class="rule-card">
+                <div class="rule-title">💬 1. Пиши по делу</div>
+                <p>Ценю свое и ваше время. Краткость — сестра таланта.</p>
+                <div class="quote">«Умение вести разговор — это талант, но умение вовремя замолчать — это мудрость.»</div>
+            </div>
 
-    <section class="section">
-        <div class="light-ray ray-tl"></div><div class="light-ray ray-br"></div>
-        <div class="glass-card">
-            <h2>Пиши по делу</h2>
-            <p>Краткость — сестра таланта и базовое уважение к чужому времени</p>
-        </div>
-    </section>
+            <div class="rule-card">
+                <div class="rule-title">🚫 2. Угрозы = ЧС</div>
+                <p>Любые попытки агрессии или давления приводят к мгновенной блокировке.</p>
+                <div class="quote">«Там, где кончаются аргументы, начинаются угрозы.»</div>
+            </div>
 
-    <section class="section">
-        <div class="light-ray ray-tl"></div><div class="light-ray ray-br"></div>
-        <div class="glass-card">
-            <h2 class="red">Угрозы — чс</h2>
-            <p>Там, где начинаются крики, заканчивается любой смысл</p>
-        </div>
-    </section>
+            <div class="rule-card">
+                <div class="rule-title">🤝 3. Без попрошайничества</div>
+                <p>Уважайте личные границы. Личка создана не для просьб о помощи.</p>
+                <div class="quote">«Рука дающего не оскудеет, но рука просящего без нужды — утомляет.»</div>
+            </div>
 
-    <section class="section">
-        <div class="light-ray ray-tl"></div><div class="light-ray ray-br"></div>
-        <div class="glass-card">
-            <h2>Вот и все</h2>
-            <p>Адекватный вопрос — адекватный ответ</p>
-            <a href="https://t.me/aefbi" class="cta-button" target="_blank">Написать мне</a>
+            <div class="rule-card" style="text-align: center;">
+                <div class="rule-title" style="justify-content: center;">✨ 4. Вот и все</div>
+                <p>Соблюдение этих простых правил сделает наше общение продуктивным.</p>
+                <div class="quote">«Относитесь к людям так, как хотите, чтобы они относились к вам.»</div>
+                <br>
+                <a href="https://t.me/aefbi" class="cta-button" target="_blank">Написать мне</a>
+            </div>
         </div>
-    </section>
+    </div>
 
     <script>
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) entry.target.classList.add('active');
-                else entry.target.classList.remove('active');
-            });
-        }, { threshold: 0.6 });
-        document.querySelectorAll('.section').forEach(s => observer.observe(s));
-
         function toggleTheme() {
             const body = document.body;
-            const btn = document.getElementById('theme-btn');
-            body.classList.toggle('light-mode');
-            btn.innerText = body.classList.contains('light-mode') ? 'Темный режим' : 'Светлый режим';
-        }
-
-        function startDot() {
-            const d = document.getElementById('dot');
-            d.style.display = 'block';
-            d.style.left = Math.random() * 80 + 'vw';
-            d.style.top = Math.random() * 80 + 'vh';
-        }
-        function hit() {
-            const p = document.getElementById('prank');
-            p.style.display = 'flex';
-            setTimeout(() => { 
-                p.style.display = 'none'; 
-                document.getElementById('dot').style.display = 'none'; 
-            }, 2500);
+            const btn = document.getElementById('themeBtn');
+            if (body.getAttribute('data-theme') === 'light') {
+                body.removeAttribute('data-theme');
+                btn.innerText = '☀️ Режим';
+            } else {
+                body.setAttribute('data-theme', 'light');
+                btn.innerText = '🌙 Режим';
+            }
         }
     </script>
 </body>
